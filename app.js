@@ -1,6 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const chatRoutes = require("./routes/chats");
+const userRoutes = require("./routes/user-routes");
 
 const HttpError = require("./models/http-error");
 
@@ -8,6 +10,8 @@ const app = express();
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,9 +24,16 @@ app.use((req, res, next) => {
 });
 app.use("/api/chats", chatRoutes);
 
-app.listen(PORT, (err, succ) => {
-  console.log(`app running on port ${PORT}`);
-});
+app.use("/api/users", userRoutes);
+
+mongoose
+  .connect(`${process.env.MONGO_URI}`)
+  .then(() => {
+    app.listen(PORT, (err, succ) => {
+      console.log(`connected to db. app running on port ${PORT}`);
+    });
+  })
+  .catch((err) => console.log(err));
 
 app.use((req, res, next) => {
   throw new HttpError("Could not find this route", 404);
