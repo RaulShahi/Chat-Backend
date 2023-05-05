@@ -27,6 +27,7 @@ userSchema.pre("save", function (next) {
   if (this.password && this.isModified("password")) {
     this.password = encryptPassword(this.password, 12);
   }
+  next();
 });
 
 module.exports = mongoose.model("User", userSchema);

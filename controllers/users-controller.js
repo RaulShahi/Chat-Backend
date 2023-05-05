@@ -20,8 +20,6 @@ exports.registerUser = async (req, res, next) => {
 
     const userExists = await User.findOne({ email });
 
-    console.log("user exists?", userExists);
-
     if (userExists) {
       return next(
         new HttpError("Account Exists.Please login or use another email.", 409)
