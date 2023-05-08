@@ -31,7 +31,6 @@ exports.registerUser = async (req, res, next) => {
       email,
       password,
     });
-    console.log("user created");
     const token = jwt.sign(
       { userId: user._id, email },
       process.env.JWT_SECRET,
@@ -60,25 +59,21 @@ exports.loginUser = async (req, res, next) => {
       return next(new HttpError("User does not exist. Please sign up.", 400));
     }
 
-    const passwordsMatch = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-    if (!passwordsMatch) {
-      return next(new HttpError("Invalid credentials.", 403));
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign(
+        { userId: user._id, email },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "2h",
+        }
+      );
+
+      return res
+        .status(200)
+        .json({ user: user.toObject({ getters: true }), token });
+    } else {
+      return next(new HttpError("Invalid credentials", 403));
     }
-
-    const token = jwt.sign(
-      { userId: user._id, email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "2h",
-      }
-    );
-
-    return res
-      .status(200)
-      .json({ user: user.toObject({ getters: true }), token });
   } catch (err) {
     return next(new HttpError(err, 500));
   }

@@ -10,7 +10,6 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     pic: {
       type: String,
-      required: true,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
@@ -23,9 +22,10 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", function (next) {
+userSchema.pre("save", async function (next) {
   if (this.password && this.isModified("password")) {
-    this.password = encryptPassword(this.password, 12);
+    const cryptedPW = await encryptPassword(this.password, 12);
+    this.password = cryptedPW;
   }
   next();
 });
