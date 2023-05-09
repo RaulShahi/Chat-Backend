@@ -4,7 +4,19 @@ const HttpError = require("../models/http-error");
 
 const User = require("../models/user-model");
 
-exports.getAllUsers = (req, res, next) => {};
+// /api/users?search
+exports.getAllUsers = async (req, res, next) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  return res.json(users);
+};
 
 exports.deleteUser = (req, res, next) => {
   const { uid } = req.params;

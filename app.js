@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const chatRoutes = require("./routes/chats");
+const chatRoutes = require("./routes/chats-routes");
 const userRoutes = require("./routes/user-routes");
 
 const HttpError = require("./models/http-error");
@@ -19,7 +19,10 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, PUT"
+  );
   next();
 });
 

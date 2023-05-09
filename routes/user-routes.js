@@ -5,12 +5,13 @@ const {
   getAllUsers,
   deleteUser,
 } = require("../controllers/users-controller");
+const verifyToken = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
+router.get("/", verifyToken, getAllUsers);
 router.post("/login", loginUser);
 router.post("/signup", registerUser);
-router.delete("/:uid", deleteUser);
+router.delete("/:uid", verifyToken, deleteUser);
 
 module.exports = router;
