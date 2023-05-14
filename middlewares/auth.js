@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
 
 const verifyToken = async (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
   let token;
   if (req.headers.authorization) {
     token = req.headers.authorization.split(" ")[1];
