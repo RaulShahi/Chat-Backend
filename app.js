@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const chatRoutes = require("./routes/chats-routes");
 const userRoutes = require("./routes/user-routes");
+const messageRoutes = require("./routes/message-routes");
 
 const HttpError = require("./models/http-error");
 
@@ -38,6 +39,8 @@ mongoose
 app.use("/api/users", userRoutes);
 
 app.use("/api/chats", chatRoutes);
+
+app.use("/api/message", messageRoutes);
 
 app.use((req, res, next) => {
   return next(new HttpError("Could not find this route", 404));
